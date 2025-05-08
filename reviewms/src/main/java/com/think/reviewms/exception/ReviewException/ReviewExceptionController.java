@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ReviewExceptionController{
     @ExceptionHandler(value = {NotFoundReviewException.class})
-    public ResponseEntity<Object> handleNotFoundBookException(NotFoundReviewException notFoundBookException)
+    public ResponseEntity<Object> handleNotFoundReviewException(NotFoundReviewException notFoundReviewException)
     {
         ReviewException reviewException = new ReviewException(
-                 notFoundBookException.getMessage(),
-                 notFoundBookException.getCause(),
+                 notFoundReviewException.getMessage(),
+                 notFoundReviewException.getCause(),
                  HttpStatus.NOT_FOUND
          );
          return new ResponseEntity<>(reviewException, HttpStatus.NOT_FOUND);

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.think.reviewms.model.Review;
@@ -26,63 +27,61 @@ public class reviewController {
     @Autowired
     private ReviewService reviewService;
 
-       @GetMapping("/welcome")
+    @GetMapping("/welcome")
     public ResponseEntity<String> welcomeMessage()
     {
         return new ResponseEntity<>("Welcome to the Book Details", HttpStatus.OK);
     }
     
-    //Get All Books from DB
+    //Get All Reviews from DB
 
     @GetMapping
-    public List<Review> getAllReviews()  
+    public ResponseEntity<Object> getAllReviews()
     {
-        return reviewService.getAllReviews();
+        List<Review> reviews = reviewService.getAllReviews();
+        if (reviews.isEmpty()) {
+            return ReviewResponseHandler.responseBuilder("No Reviews Found", HttpStatus.NOT_FOUND, null);
+        } else {
+            return ReviewResponseHandler.responseBuilder("Book Details with all reviews Found", HttpStatus.OK, reviews);
+        }
     }
 
-    // Get a Particular Book from DB
+
+    // Get a Particular Review from DB
     @GetMapping("{reviewId}")
     public ResponseEntity<Object> getReviewbyId(@PathVariable long reviewId)
     {
-        return ReviewResponseHandler.responseBuilder
-        ("Requested Book details are here", HttpStatus.OK, reviewService.getReviewbyId(reviewId));
+        Review review = reviewService.getAllReviews().stream()
+                .filter(b -> b.getReviewId() == reviewId)
+                .findFirst()
+                .orElse(null);
+        if (review != null) {
+            return ReviewResponseHandler.responseBuilder("Book Details with review Found", HttpStatus.OK, review);
+        } else {
+            return ReviewResponseHandler.responseBuilder("Book Not Found", HttpStatus.NOT_FOUND, null);
+        }
     }
  
     @PostMapping("")
-    public ResponseEntity<Object> addReview(@RequestBody Review review)
+    public ResponseEntity<Object> addReview(@RequestParam long bookid,@RequestBody Review review)
     {
-        reviewService.addReview(review);
-        return ReviewResponseHandler.responseBuilder("Book Details Added Successfully", HttpStatus.CREATED, review);
+        review.setBookid(bookid);
+        // Assuming the book ID is part of the review object
+        Review addedReview = reviewService.addReview(bookid, review);
+        return ReviewResponseHandler.responseBuilder("Review Details Added Successfully", HttpStatus.CREATED, addedReview);
     }
+
 
     @PutMapping("/{reviewId}")
     public ResponseEntity<Object> updateReview(@PathVariable long reviewId, @RequestBody Review review)
     {
-        review.setReviewId(reviewId); // Set the ID of the review to be updated
+        review.setReviewId(reviewId);
+        review.setDescription(review.getDescription());
+        review.setBookid(review.getBookid());
+        // Assuming the book ID is part of the review object
         String updatedReview = reviewService.updateReview(review);
-        return ReviewResponseHandler.responseBuilder("Book Details Updated Successfully", HttpStatus.OK, updatedReview);
+        return ReviewResponseHandler.responseBuilder("Review Details Updated Successfully", HttpStatus.OK, updatedReview);
     }
-
-   // @PutMapping("/{bookid}/assignvendor")
-   // public ResponseEntity<Object> assignVendorBook(
-       // @PathVariable Long bookid,@RequestParam String vendorId) {
-
-            //Book updatedBook = bookService.assignVendorBook(bookid, vendorId); // No longer returns Object
-            //return BookResponseHandler.responseBuilder(
-               // "Vendor assigned to book successfully",
-               // HttpStatus.OK,
-               // updatedBook // Return the updated book
-       // );
-  //  }
-
-    //@ExceptionHandler(EntityNotFoundException.class) // Handle the exception
-    //public ResponseEntity<Object> NotFoundBookException(EntityNotFoundException ex) {
-       // return BookResponseHandler.responseBuilder(
-                //ex.getMessage(), // Get the message from the exception
-               // HttpStatus.NOT_FOUND,
-                //null // No data needed in the body for this error
-      //  );
-   // }
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<String>  deleteReview(@PathVariable long reviewId) {
