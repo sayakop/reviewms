@@ -55,8 +55,16 @@ public class ReviewServiceimpl implements ReviewService {
     }
 
     @Override
-    public Review getReviewById(long reviewId) {
+    public Review getReviewById(long reviewId,long bookid) {
+        if (bookid != 0) {
+            reviewRepository.findById(reviewId).orElseThrow(() -> new NotFoundReviewException("Book not found with id: " + bookid));
+        }
         return reviewRepository.findById(reviewId)
         .orElseThrow(() -> new NotFoundReviewException("Review not found with id: " + reviewId));
+    }
+
+    @Override
+    public List<Review> getReviewsByBookId(long bookid) {
+        return reviewRepository.findByBookId(bookid);
     }
 }

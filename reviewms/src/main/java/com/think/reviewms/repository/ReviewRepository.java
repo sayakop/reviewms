@@ -8,4 +8,5 @@ import com.think.reviewms.model.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByReviewId(long reviewId);
+    List<Review> findByBookId(long bookid);
 }

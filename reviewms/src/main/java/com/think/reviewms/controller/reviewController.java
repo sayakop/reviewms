@@ -1,5 +1,6 @@
 package com.think.reviewms.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,18 +50,22 @@ public class reviewController {
 
     // Get a Particular Review from DB
     @GetMapping("{reviewId}")
-    public ResponseEntity<Object> getReviewbyId(@PathVariable long reviewId)
+    public ResponseEntity<Object> getReviewbyId(@PathVariable long reviewId, @RequestParam long bookid)
     {
-        Review review = reviewService.getAllReviews().stream()
-                .filter(b -> b.getReviewId() == reviewId)
-                .findFirst()
-                .orElse(null);
-        if (review != null) {
-            return ReviewResponseHandler.responseBuilder("Book Details with review Found", HttpStatus.OK, review);
-        } else {
-            return ReviewResponseHandler.responseBuilder("Book Not Found", HttpStatus.NOT_FOUND, null);
-        }
+        // Assuming the book ID is part of the review object
+        Review review = reviewService.getReviewById(reviewId, bookid);
+        return review != null
+                ? ReviewResponseHandler.responseBuilder("Review Found", HttpStatus.OK, review)
+                : ReviewResponseHandler.responseBuilder("Review Not Found", HttpStatus.NOT_FOUND, null);
     }
+
+    @GetMapping("/book/{bookId}")
+    public ResponseEntity<Object> getReviewsByBookId(@PathVariable long bookid) {
+    List<Review> reviews = reviewService.getReviewsByBookId(bookid);
+    return !reviews.isEmpty()
+        ? ReviewResponseHandler.responseBuilder("Reviews Found", HttpStatus.OK, reviews)
+        : ReviewResponseHandler.responseBuilder("No Reviews Found", HttpStatus.NOT_FOUND, new ArrayList<>());
+}
  
     @PostMapping("")
     public ResponseEntity<Object> addReview(@RequestParam long bookid,@RequestBody Review review)
