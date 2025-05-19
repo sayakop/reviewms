@@ -50,16 +50,15 @@ public class reviewController {
 
     // Get a Particular Review from DB
     @GetMapping("{reviewId}")
-    public ResponseEntity<Object> getReviewbyId(@PathVariable long reviewId, @RequestParam long bookid)
+    public ResponseEntity<Object> getReviewbyId(@PathVariable long reviewId)
     {
-        // Assuming the book ID is part of the review object
-        Review review = reviewService.getReviewById(reviewId, bookid);
+        Review review = reviewService.getReviewById(reviewId,reviewId);
         return review != null
-                ? ReviewResponseHandler.responseBuilder("Review Found", HttpStatus.OK, review)
-                : ReviewResponseHandler.responseBuilder("Review Not Found", HttpStatus.NOT_FOUND, null);
+            ? ReviewResponseHandler.responseBuilder("Review Found", HttpStatus.OK, review)
+            : ReviewResponseHandler.responseBuilder("Review Not Found", HttpStatus.NOT_FOUND, null);
     }
 
-    @GetMapping("/book/{bookId}")
+    @GetMapping("/book/{bookid}")
     public ResponseEntity<Object> getReviewsByBookId(@PathVariable long bookid) {
     List<Review> reviews = reviewService.getReviewsByBookId(bookid);
     return !reviews.isEmpty()
