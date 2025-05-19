@@ -65,6 +65,6 @@ public class ReviewServiceimpl implements ReviewService {
 
     @Override
     public List<Review> getReviewsByBookId(long bookid) {
-        return reviewRepository.findByBookId(bookid);
+        return reviewRepository.findByBookid(bookid);
     }
 }
