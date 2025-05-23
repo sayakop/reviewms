@@ -8,6 +8,10 @@ spring:
         url: jdbc:mysql://localhost:3306/reviewdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
         username: root
         password: admin_sayak25
+        # username: springuser  
+        # password: springpass
+        # url: jdbc:mysql://mysql:3306/demo_db 
+        # driver-class-name: com.mysql.cj.jdbc.Driver
         driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         hibernate:
