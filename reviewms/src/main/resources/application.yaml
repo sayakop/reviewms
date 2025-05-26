@@ -29,6 +29,13 @@ management:
   endpoint:
     health:
       show-details: always
+
+  #Zipkin
+  ############## Zipkin Configuration ##############    
+  tracing:
+    sampling:
+      probability: 1.0 # 100% sampling rate    
+
 #Eureka
 eureka:
   client:
