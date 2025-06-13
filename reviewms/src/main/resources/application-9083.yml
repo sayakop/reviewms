@@ -1,0 +1,11 @@
+server:
+  port: 9083
+
+spring:
+  application:
+    name: reviewms
+
+eureka:
+  instance:
+    instance-id: reviewms:9083
+    hostname: localhost
