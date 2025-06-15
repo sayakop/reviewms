@@ -5,7 +5,11 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
+<<<<<<< HEAD
 		<version>3.5.0</version>
+=======
+		<version>3.4.6</version>
+>>>>>>> a81b29f0055b030887419789f6325ea550687d7c
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.think</groupId>
